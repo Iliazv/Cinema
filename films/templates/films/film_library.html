@@ -1,0 +1,297 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'films/style.css' %}">
+    <!-- <script src="{% static 'films/switch.js' %}" defer></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{% static 'films/popup.js' %}" defer></script>
+    <script src="{% static 'films/request.js' %}" defer></script>
+    <script src="{% static 'films/account.js' %}" defer></script>
+    <script src="{% static 'films/burger.js' %}" defer></script>
+    <!-- <script src="{% static 'films/switch.js' %}" defer></script> -->
+    <title>Синема СПБ</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="content">
+            <header class="head">
+                <div class="head__container">
+                    <div class="head__content">
+                        <div class="head__top">
+                            <a href="{% url 'index' %}" class="head__logo">
+                                <img src="../static/films/images/logo.png" alt="" class="head__logo_image">
+                                <div class="head__slogan">
+                                    <span class="head__main">Синема</span>
+                                    <span class="head__sub">Санкт-Петербург</span>
+                                </div>
+                            </a>
+                            <div class="head__network">
+                                <a href="https://vk.com/"><img src="../static/films/images/network1.png" alt="" class="head__social"></a>
+                                <a href="https://www.youtube.com/"><img src="../static/films/images/network2.png" alt="" class="head__social"></a>
+                                <a href="https://web.telegram.org/k/"><img src="../static/films/images/network3.png" alt="" class="head__social"></a>
+                            </div>
+                            <div class="head__login">
+                                {% if not request.user.is_authenticated %}
+                                    <button class="head__login_btn">Войти</button>
+                                {% else %}  
+                                    <a href="#"><img src="../static/films/images/user.png" alt="" class="head__user"></a>
+                                    <div class="head__account">
+                                        <div class="head__email">
+                                            {{ request.user.email }}
+                                        </div>
+                                        <a href="{% url 'history' %}" class="head__redirect head__redirect_history">
+                                            История
+                                        </a>
+                                        <a href="{% url 'help' %}" class="head__redirect head__redirect_help">
+                                            Помощь
+                                        </a>
+                                        <a href="{% url 'logout_view' %}" class="head__redirect head__redirect_logout">
+                                            Выйти
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if modal == 'login' %}
+                            <div class="popup block">
+                            {% else %}
+                            <div class="popup">
+                            {% endif %}
+                                <div class="popup__content">
+                                    <div class="popup__ribbon">
+                                        <div class="popup__close popup__close_1">&times;</div>
+                                        <a href="#" class="popup__logo">
+                                            <img src="../static/films/images/logo.png" alt="" class="popup__logo_image">
+                                            <div class="head__slogan">
+                                                <span class="popup__main">Синема</span>
+                                                <span class="popup__sub">Санкт-Петербург</span>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="popup__redirect" id="popup-register">
+                                            Регистрация
+                                        </a>
+                                    </div>
+                                    <form action="{% url 'login' %}" method="POST">
+                                        {% csrf_token %}
+                                        <span class="popup__label gaping">Вход</span>
+                                        <div class="popup__input">
+                                            <input type="text" placeholder="Email" name="email" class="popup__field popup__field_email" required>
+                                        </div>
+                                        <div class="popup__input">
+                                            <input type="password" placeholder="Пароль" name="password" class="popup__field popup__field_password" id="password-1" required>
+                                            <button type="button" onclick="showPassword(id)" id="1"><img src="../static/films/images/eye.png" alt="" class="popup__eye"><img src="../static/films/images/band.png" alt="" class="popup__opened" id="eye-1"></button>
+                                        </div>
+                                        <a href="#" class="popup__forget">Забыл пароль</a>
+                                        {% if modal == 'login' %}
+                                        <span class="popup__message">Пользователь не найден</span>
+                                        {% endif %}
+                                        <button type="submit" class="popup__login">Войти</button>
+                                    </form>
+                                    <div class="popup__auth">
+                                        <span class="popup__label spacing">Войти через:</span>
+                                        <div class="popup__list">
+                                            <a href="#" class="popup__network popup__network_google"><img src="../static/films/images/google.png" alt=""></a>
+                                            <a href="#" class="popup__network popup__network_vk"><img src="../static/films/images/vk.png" alt=""></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if modal == 'register' %}
+                            <div class="popup-2 block">
+                            {% else %}
+                            <div class="popup-2">
+                            {% endif %}
+                                <div class="popup__content">
+                                    <div class="popup__ribbon">
+                                        <div class="popup__close popup__close_2">&times;</div>
+                                        <a href="#" class="popup__logo">
+                                            <img src="../static/films/images/logo.png" alt="" class="popup__logo_image">
+                                            <div class="head__slogan">
+                                                <span class="popup__main">Синема</span>
+                                                <span class="popup__sub">Санкт-Петербург</span>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="popup__redirect" id="popup-login">
+                                            Вход
+                                        </a>
+                                    </div>
+                                    <form action="{% url 'register' %}" method="POST">
+                                        {% csrf_token %}
+                                        <span class="popup__label">Регистрация</span>
+                                        {% for field in form %}
+                                        <div class="popup__input">
+                                            <input 
+                                                type="{% if 'password' in field.label_tag %}password{% else %}email{% endif %}"
+                                                name="{{ field.html_name }}"
+                                                id="password-{{ forloop.counter }}"
+                                                {% if field.id_for_label == 'id_email' %}
+                                                    placeholder="Email"
+                                                    class="popup__field popup__field_email"
+                                                {% elif field.id_for_label == 'id_password1' %}
+                                                    placeholder="Пароль"
+                                                    class="popup__field popup__field_password"
+                                                {% else %}
+                                                    placeholder="Подтверждение пароля"
+                                                    class="popup__field popup__field_password"
+                                                {% endif %}
+                                                required
+                                            >
+                                            {% if 'password' in field.label_tag %}
+                                                <button type="button" onclick="showPassword(id)" id="{{ forloop.counter }}"><img src="../static/films/images/eye.png" alt="" class="popup__eye"><img src="../static/films/images/band.png" alt="" class="popup__opened" id="eye-{{ forloop.counter }}"></button>
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                        <a href="#" class="popup__forget">Забыл пароль</a>
+                                        {% if modal == 'register' %}
+                                        <span class="popup__message">Введенные данные неверны</span>
+                                        {% endif %}
+                                        <button type="submit" class="popup__register">Регистрация</button>
+                                    </form>
+                                    <div class="popup__auth">
+                                        <span class="popup__label spacing">Войти через:</span>
+                                        <div class="popup__list">
+                                            <a href="#" class="popup__network popup__network_google"><img src="../static/films/images/google.png" alt=""></a>
+                                            <a href="#" class="popup__network popup__network_vk"><img src="../static/films/images/vk.png" alt=""></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if modal == 'register' or modal == 'login' %}
+                            <div class="background block"></div>
+                            {% else %}
+                            <div class="background"></div>
+                            {% endif %}
+                        </div>
+                        <div class="head__bottom">
+                            <nav class="head__list">
+                                <a href="{% url 'film_list' %}">Фильмы</a>
+                                <a href="{% url 'film_library' %}">Кинотека</a>
+                                <a href="{% url 'cinema_list' %}">Кинотеатры</a>
+                                <a href="{% url 'help' %}">Помощь</a>
+                            </nav>
+                            <img src="../static/films/images/navigation.png" alt="" class="head__burger" id="burger">
+                            <div class="head__hidden_navigation" id="navigation">
+                                <div class="head__links">
+                                    <a href="{% url 'film_list' %}" class="head__hidden_link">Фильмы</a>
+                                    <a href="{% url 'film_library' %}" class="head__hidden_link">Кинотека</a>
+                                    <a href="{% url 'cinema_list' %}" class="head__hidden_link">Кинотеатры</a>
+                                    <a href="{% url 'help' %}" class="head__hidden_link">Помощь</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <section class="page">
+                <div class="list">
+                    <div class="list__container">
+                        <div class="list__block">
+                            <div class="list__premier">
+                                <img src="../static/films/images/premier.png" alt="">
+                            </div>
+                            <div class="list__info">
+                                <div class="list__template" id="template">
+                                    <div class="list__head list__head_library">
+                                        <div class="list__title">
+                                            В продаже кинотеки
+                                        </div>
+                                        <div class="list__length">
+                                            Всего {{ films|length }} фильмов
+                                        </div>
+                                    </div>
+                                    <div class="main__grid">
+                                        {% for film in films %}
+                                            <a href="{% url 'film_page' pk=film.pk %}" class="main__card">
+                                                {% if film.tag %}
+                                                    <div class="main__special">
+                                                        {{ film.tag }}
+                                                    </div>
+                                                {% else %}
+                                                    <div class="main__gap">
+
+                                                    </div>
+                                                {% endif %}
+                                                <div class="main__image">
+                                                    {% if film.picture %}
+                                                        <img src="{{ film.picture.url }}" alt="">
+                                                    {% else %}
+                                                        <img src="../static/films/images/undefined_photo.png" alt="" class="main__undefined">
+                                                    {% endif %}
+                                                </div>
+                                                {% if film.genres.all %}
+                                                <div class="main__tags">
+                                                {% else %}
+                                                <div class="main__tags_empty">
+                                                {% endif %}
+                                                    <span class="main__age">{{ film.age }}+</span>
+                                                    {% for genre in film.genres.all %}
+                                                        {% if forloop.last %}
+                                                            <span class="main__genre">{{ genre.genre }}</span>
+                                                        {% else %}
+                                                            <span class="main__genre">{{ genre.genre }},</span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="main__name">
+                                                    {{ film.title }} {{ film.pk }}
+                                                </div>
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <footer class="foot">
+            <div class="foot__container">
+                <div class="foot__content">
+                    <a href="{% url 'index' %}" class="foot__logo">
+                        <img src="../static/films/images/logo.png" alt="" class="foot__logo_image">
+                        <div class="foot__slogan">
+                            <span class="foot__main">Синема</span>
+                            <span class="foot__sub">Санкт-Петербург</span>
+                        </div>
+                    </a>
+                    <div class="foot__data">
+                        <div class="foot__guest">
+                            <div class="foot__title">Для гостей</div>
+                            <a href="{% url 'film_list' %}" class="foot__link foot__link_first">Фильмы</a>
+                            <a href="{% url 'film_library' %}" class="foot__link">Кинотека</a>
+                            <a href="{% url 'cinema_list' %}" class="foot__link">Кинотеатры</a>
+                            <span class="foot__copyright">© 2023, АО «СИНЕМА СПБ»</span>
+                        </div>
+                        <div class="foot__contact">
+                            <div class="foot__title">О нас</div>
+                            <a href="{% url 'contact' %}" class="foot__link foot__link_first">Контакты</a>
+                            <a href="{% url 'help' %}" class="foot__link">Помощь</a>
+                        </div>
+                        <div class="foot__social">
+                            <div class="foot__title">Мы в соцсетях</div>
+                            <div class="foot__network">
+                                <a href="https://vk.com/"><img src="../static/films/images/network1.png" alt="" class="head__social"></a>
+                                <a href="https://www.youtube.com/"><img src="../static/films/images/network2.png" alt="" class="head__social"></a>
+                                <a href="https://web.telegram.org/k/"><img src="../static/films/images/network3.png" alt="" class="head__social"></a>
+                            </div>
+                            <div class="foot__app">
+                                <a href="https://www.apple.com/app-store/"><img src="../static/films/images/app_store.svg" alt=""></a>
+                                <a href="https://play.google/intl/ru_ru/play-pass/"><img src="../static/films/images/google_play.svg" alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<div class="hall__template" id="template">
+    <div class="hall__head">
+        {{ selected_session.film.title }} <span class="hall__age">{{ selected_session.film.age }}+</span>
+    </div>
+    <div class="hall__type">
+        {{ selected_session.type }}
+    </div>
+    <div class="hall__place">
+        {{ selected_session.cinema }}, {{ selected_session.hall }}
+    </div>
+    <div class="hall__date">
+        {{ selected_session.time|date:"F j" }}, {{ selected_session.time|time }}
+    </div>
+    <span class="hall__line"></span>
+    <form action="{% url 'buy_ticket' %}" method="POST" class="hall__form">
+        {% csrf_token %}
+        {% if selected_session.place_list.items|length > 70 %}
+            <div class="hall__list_big">
+        {% elif selected_session.place_list.items|length > 40 %}
+            <div class="hall__list_medium">
+        {% else %}
+            <div class="hall__list">    
+        {% endif %}
+            {% for key, value in selected_session.place_list.items %}
+                <div class="page__checkbox">
+                    <div class="checkbox-wrapper-4">
+                        <input type="hidden" value="{{ selected_session.pk }}" name="session_id">
+                        {% if value == False %}
+                            <input class="inp-cbx" id="place_{{ key }}" value="{{ key }}" data-price="{{ selected_session.price }}" name="seats" type="checkbox"/>
+                            <label class="cbx" for="place_{{ key }}">
+                        {% else %}
+                            <input class="inp-cbx" id="place_{{ key }}" value="{{ key }}" data-price="{{ selected_session.price }}" name="seats" type="checkbox" disabled/>
+                            <label class="cbx-grey" for="place_{{ key }}">
+                        {% endif %}
+                        <span><p>{{ key }}</p></span>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        <div class="hall__submit">
+            <span class="hall__line"></span>
+            {% if not request.user.is_authenticated %}
+                <button type="submit" class="hall__button" disabled>Купить</button>
+            {% else %}
+                <button type="submit" class="hall__button">Купить</button>
+            {% endif %}
+            <span class="hall__inner">Выберите места</span>
+        </div>
+    </form>
+</div>
+
+<script>
+    var allCheckbox = document.querySelectorAll('.inp-cbx')
+    var ticketBlock = document.querySelector('.hall__inner')
+    
+    allCheckbox.forEach(element => {
+        element.addEventListener('change', function(event) {
+            if (element.checked) {
+                let firstCharacter = ticketBlock.innerHTML[0]
+                if (/^\d+$/.test(firstCharacter)) {
+                    let summary = parseFloat(ticketBlock.innerHTML)
+                    summary += parseFloat(element.getAttribute('data-price'))
+                    ticketBlock.innerHTML = `${summary} ₽`
+                } else {
+                    ticketBlock.innerHTML = `${parseFloat(element.getAttribute('data-price'))} ₽`
+                }
+            } else {
+                let value = parseFloat(ticketBlock.innerHTML)
+                if (value > 0) {
+                    let summary = parseFloat(ticketBlock.innerHTML)
+                    summary -= parseFloat(element.getAttribute('data-price'))
+                    ticketBlock.innerHTML = `${summary} ₽`
+                    if (summary === 0) {
+                        ticketBlock.innerHTML = 'Выберите места'
+                    }
+                }
+            }
+        })
+    });
+</script> 

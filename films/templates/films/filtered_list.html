@@ -1,0 +1,49 @@
+<div class="list__template" id="template">
+    <div class="list__head">
+        <div class="list__title">
+            В продаже в кинотеатрах Санкт-Петербурга
+        </div>
+        <div class="list__length">
+            Найде{{ data|length|pluralize:"н,но" }} {{ data|length }} филь{{ data|length|pluralize:"м,мов" }}
+        </div>
+    </div>
+    <div class="main__grid">
+        {% for film in data %}
+            <a href="{% url 'film_page' pk=film.pk %}" class="main__card">
+                {% if film.tag %}
+                    <div class="main__special">
+                        {{ film.tag }}
+                    </div>
+                {% else %}
+                    <div class="main__gap">
+
+                    </div>
+                {% endif %}
+                <div class="main__image">
+                    {% if film.picture %}
+                        <img src="{{ film.picture.url }}" alt="">
+                    {% else %}
+                        <img src="../static/films/images/undefined_photo.png" alt="" class="main__undefined">
+                    {% endif %}
+                </div>
+                {% if film.genres.all %}
+                <div class="main__tags">
+                {% else %}
+                <div class="main__tags_empty">
+                {% endif %}
+                    <span class="main__age">{{ film.age }}+</span>
+                    {% for genre in film.genres.all %}
+                        {% if forloop.last %}
+                            <span class="main__genre">{{ genre.genre }}</span>
+                        {% else %}
+                            <span class="main__genre">{{ genre.genre }},</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="main__name">
+                    {{ film.title }}
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</div>
