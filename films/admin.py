@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Film, Session, Genre, Image, User, Question, Cinema, Ticket
 from django.utils.html import format_html
+
 #kinoman112
 
 if not hasattr(admin, "display"):
